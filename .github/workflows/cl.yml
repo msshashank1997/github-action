@@ -1,5 +1,5 @@
 #test azure boards
-#second 
+#second
 name: My Workflow
 on:
   push:
