@@ -1,0 +1,17 @@
+name: Conditional Execution Workflow
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run tests
+      run: npm test
+
+    - name: Deploy
+      if: success() # This step runs only if the previous step succeeded
+      run: echo "Deploying application..."
