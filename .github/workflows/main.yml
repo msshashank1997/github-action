@@ -60,7 +60,7 @@ jobs:
               cat > .env << 'EOF'
 
               # Replace the placeholder with actual value
-              sed -i "s| MONGO_URI=".*"|MONGO_URI=${{ secrets.MONGO_URI }}|g" .env
+              sed -i "s|MONGO_URI=".*"|MONGO_URI=${{ secrets.MONGO_URI }}|g" .env
               
               # Check if any container is using port 3001 and remove it
               CONTAINER_ID=$(docker ps -q --filter publish=3001)
