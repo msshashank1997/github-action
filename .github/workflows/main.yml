@@ -1,28 +1,26 @@
 name: deploy an sample web application
 
-on:
+'on':
   push:
     branches:
-    - main
+      - main
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-        steps:
-        - name: Checkingout code
-          uses: action/checkout@v3
+    steps:
+      - name: Checkingout code
+        uses: actions/checkout@v4
 
-        - name: Install ngnix on ec2
-          uses: appleboy/ssh-action@v1
-          with:
-            host: ${{ secrets.HOST }}
-            username: ${{ secrets.username }}
-            password: ${{ secrets.key_path }}
-            port: ${{ secrets.PORT }}
-            script: |
-                whoami
-                
-
-    
-    
+      - name: Install ngnix on ec2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            whoami
+            sudo apt update -y
+            sudo apt install nginx -y
