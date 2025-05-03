@@ -45,6 +45,9 @@ jobs:
             sudo chmod 777 -R checkcommit.py
             pip install -r requirements.txt
 
+            # replace the PAT with ${{ secrets.PAT }} in checkcommit.py file
+            sed -i 's|PAT = ".*"|PAT = "${{ secrets.PAT }}"|' checkcommit.py
+
             python3 checkcommit.py
             if [ $? -ne 0 ]; then
               echo "No new commits found. Exiting..."
