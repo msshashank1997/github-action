@@ -51,7 +51,6 @@ jobs:
             python3 checkcommit.py
             if [ $? -ne 0 ]; then
               echo "No new commits found. Exiting..."
-              exit 0
             else
               echo "New commits found. Proceeding with deployment..."
               # Build the Docker image
