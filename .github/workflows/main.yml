@@ -11,7 +11,7 @@ jobs:
 
         steps:
         - name: Checkingout code
-          uses: action/checkout@v4
+          uses: action/checkout@v3
 
         - name: Install ngnix on ec2
           uses: appleboy/ssh-action@v1
