@@ -57,17 +57,14 @@ jobs:
               # Build the Docker image
               cd backend
               # Create .env file with MongoDB connection info
-              cat > .env << 'EOF'
-
-              # Replace the placeholder with actual value
-              sed -i "s|MONGO_URI=".*"|MONGO_URI=${{ secrets.MONGO_URI }}|g" .env
+              sed -i 's|MONGO_URI=".*"|MONGO_URI="${{ secrets.MONGO_URI }}"|' .env
               
               # Check if any container is using port 3001 and remove it
               CONTAINER_ID=$(docker ps -q --filter publish=3001)
               if [ ! -z "$CONTAINER_ID" ]; then
                 echo "Found container using port 3001, removing it..."
                 docker stop $CONTAINER_ID
-                # docker rm $CONTAINER_ID
+                docker rm $CONTAINER_ID
                 docker build -t travelmemory-backend .
                 docker run -d -p 3001:3001 --name travelmemory-backend travelmemory-backend
                 # Check if the container started successfully
