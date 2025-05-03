@@ -12,8 +12,32 @@ jobs:
     steps:
       - name: Checkingout code
         uses: actions/checkout@v4
+        
+      - name: Create sample HTML page
+        run: |
+          mkdir -p public
+          cat > public/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Sample Web Application</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+              h1 { color: #333; }
+              .container { max-width: 800px; margin: 0 auto; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Welcome to my Sample Web Application!</h1>
+              <p>This page was deployed using GitHub Actions.</p>
+              <p>Current time of deployment: $(date)</p>
+            </div>
+          </body>
+          </html>
+          EOF
 
-      - name: Install ngnix on ec2
+      - name: Install ngnix on ec2 and deploy website
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
@@ -24,3 +48,50 @@ jobs:
             whoami
             sudo apt update -y
             sudo apt install nginx -y
+            
+            # Create website directory
+            sudo mkdir -p /var/www/html
+            
+            # Create sample HTML page
+            sudo tee /var/www/html/index.html > /dev/null << 'EOF'
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Sample Web Application</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+                h1 { color: #333; }
+                .container { max-width: 800px; margin: 0 auto; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>Welcome to my Sample Web Application!</h1>
+                <p>This page was deployed using GitHub Actions.</p>
+                <p>Deployed on: $(date)</p>
+                <p>Server hostname: $(hostname)</p>
+              </div>
+            </body>
+            </html>
+            EOF
+            
+            # Configure nginx
+            sudo tee /etc/nginx/sites-available/default > /dev/null << 'EOF'
+            server {
+                listen 80 default_server;
+                listen [::]:80 default_server;
+                
+                root /var/www/html;
+                index index.html index.htm;
+                
+                server_name _;
+                
+                location / {
+                    try_files $uri $uri/ =404;
+                }
+            }
+            EOF
+            
+            # Restart nginx to apply changes
+            sudo systemctl restart nginx
+            echo "Deployment completed successfully!"
