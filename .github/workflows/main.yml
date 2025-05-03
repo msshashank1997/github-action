@@ -51,6 +51,7 @@ jobs:
             python3 checkcommit.py
             if [ $? -ne 0 ]; then
               echo "No new commits found. Exiting..."
+              exit 0
             else
               echo "New commits found. Proceeding with deployment..."
               # Build the Docker image
@@ -63,6 +64,7 @@ jobs:
               # Server Port
               PORT=3001
               EOF
+              
               # Check if any container is using port 3001 and remove it
               CONTAINER_ID=$(docker ps -q --filter publish=3001)
               if [ ! -z "$CONTAINER_ID" ]; then
