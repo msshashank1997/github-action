@@ -57,13 +57,11 @@ jobs:
               # Build the Docker image
               cd backend
               # Create .env file with MongoDB connection info
-              cat > .env << EOF
-# MongoDB Connection
-MONGO_URI="${{ secrets.MONGO_URI }}"
+              cat > .env << 'EOF'
 
-# Server Port
-PORT=3001
-EOF
+              # Replace the placeholder with actual value
+              sed -i 's|PAT = ".*"|PAT = "${{ secrets.PAT }}"|' .env
+              sed -i "s| ONGO_URI=".*"|${{ secrets.MONGO_URI }}|g" .env
               
               # Check if any container is using port 3001 and remove it
               CONTAINER_ID=$(docker ps -q --filter publish=3001)
