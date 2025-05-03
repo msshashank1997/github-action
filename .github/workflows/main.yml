@@ -42,6 +42,7 @@ jobs:
             git clone https://github.com/msshashank1997/TravelMemory.git
 
             cd TravelMemory
+            git pull
             sudo chmod 777 -R checkcommit.py
             pip install -r requirements.txt
 
