@@ -30,7 +30,7 @@ jobs:
             exit 0
       
       - name: Build Docker image
-                uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -42,7 +42,7 @@ jobs:
             git clone https://github.com/msshashank1997/TravelMemory.git
 
             cd TravelMemory
-            sudo chmod 777 -r checkcommit.py
+            sudo chmod 777 -R checkcommit.py
             pip install -r requirements.txt
 
             python3 checkcommit.py
@@ -76,5 +76,15 @@ jobs:
                   echo "Failed to start the container."
                   exit 1
                 fi
+              else
+                # No container found, just build and run
+                docker build -t travelmemory-backend .
+                docker run -d -p 3001:3001 --name travelmemory-backend travelmemory-backend
+                if [ $? -eq 0 ]; then
+                  echo "Container started successfully."
+                else
+                  echo "Failed to start the container."
+                  exit 1
+                fi
               fi
-          
+            fi
